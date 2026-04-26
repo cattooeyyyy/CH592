@@ -17,7 +17,10 @@ APP/key_scan.o: ../APP/key_scan.c \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/SRC/StdPeriphDriver/inc/CH59x_usbhost.h \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/SRC/StdPeriphDriver/inc/ISP592.h \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/key_scan.h \
- d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/hidkbd.h
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/hidkbd.h \
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/app_led.h \
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HAL/include/CONFIG.h \
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/LIB/CH59xBLE_LIB.h
 
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/SRC/StdPeriphDriver/inc/CH59x_common.h:
 
@@ -56,3 +59,9 @@ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/SRC/StdPeriphDriver/inc/ISP592.h:
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/key_scan.h:
 
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/hidkbd.h:
+
+d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/app_led.h:
+
+d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HAL/include/CONFIG.h:
+
+d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/LIB/CH59xBLE_LIB.h:

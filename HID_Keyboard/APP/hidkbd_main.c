@@ -17,6 +17,7 @@
 #include "hiddev.h"
 #include "hidkbd.h"
 #include "key_scan.h"
+#include "app_led.h"
 
 /*********************************************************************
  * GLOBAL TYPEDEFS
@@ -73,7 +74,8 @@ int main(void)
     HAL_Init();
     GAPRole_PeripheralInit();
     HidDev_Init();
-   
+    //LED…¡À∏≥ı ºªØ
+    AppLed_Init();
 
     HidEmu_Init();
     Main_Circulation();

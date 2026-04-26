@@ -20,6 +20,7 @@
 #include "hiddev.h"
 #include "hidkbd.h"
 #include "key_scan.h"
+#include "app_led.h"
 
 /*********************************************************************
  * MACROS
@@ -392,9 +393,16 @@ static void hidEmuStateCB(gapRole_States_t newState, gapRoleEvent_t *pEvent)
         break;
 
         case GAPROLE_ADVERTISING:
-            if(pEvent->gap.opcode == GAP_MAKE_DISCOVERABLE_DONE_EVENT)
+          if(pEvent->gap.opcode == GAP_MAKE_DISCOVERABLE_DONE_EVENT)
             {
                 PRINT("Advertising..\n");
+                
+                // 获取当前绑定的主机数量
+                uint8_t bondCount = 0;
+                GAPBondMgr_GetParameter(GAPBOND_BOND_COUNT, &bondCount);
+                
+                // 通知 LED 模块：当前处于广播状态 (0)，并传入绑定数量
+                AppLed_Set_State(0, bondCount);
             }
             break;
 
@@ -407,6 +415,8 @@ static void hidEmuStateCB(gapRole_States_t newState, gapRoleEvent_t *pEvent)
                 hidEmuConnHandle = event->connectionHandle;
                 tmos_start_task(hidEmuTaskId, START_PARAM_UPDATE_EVT, START_PARAM_UPDATE_EVT_DELAY);
                 PRINT("Connected..\n");
+                //LED模块响应
+                AppLed_Set_State(1, 0);
             }
             break;
 
@@ -425,6 +435,7 @@ static void hidEmuStateCB(gapRole_States_t newState, gapRoleEvent_t *pEvent)
             else if(pEvent->gap.opcode == GAP_LINK_TERMINATED_EVENT)
             {
                 PRINT("Disconnected.. Reason:%x\n", pEvent->linkTerminate.reason);
+                AppLed_Set_State(0, 1);
             }
             else if(pEvent->gap.opcode == GAP_LINK_ESTABLISHED_EVENT)
             {
@@ -537,3 +548,21 @@ static void hidEmuEvtCB(uint8_t evt)
 
 /*********************************************************************
 *********************************************************************/
+/*********************************************************************
+ * @fn      HidEmu_Disconnect
+ *
+ * @brief   主动断开当前的蓝牙连接
+ *
+ * @return  none
+ */
+void HidEmu_Disconnect(void)
+{
+    if (hidEmuConnHandle != GAP_CONNHANDLE_INIT)
+    {
+        // 调用沁恒底层正确的 API 断开连接
+        GAPRole_TerminateLink(hidEmuConnHandle);
+        
+        // 可选：如果要彻底重置历史配对记录，取消注释下一行
+        // GAPBondMgr_SetParameter(GAPBOND_ERASE_ALLBONDS, 0, NULL);
+    }
+}

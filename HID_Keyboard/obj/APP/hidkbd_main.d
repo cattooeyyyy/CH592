@@ -26,7 +26,8 @@ APP/hidkbd_main.o: ../APP/hidkbd_main.c \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HAL/include/KEY.h \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/Profile/include/hiddev.h \
  d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/hidkbd.h \
- d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/key_scan.h
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/key_scan.h \
+ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/app_led.h
 
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HAL/include/CONFIG.h:
 
@@ -83,3 +84,5 @@ d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/Profile/include/hiddev.h:
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/hidkbd.h:
 
 d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/key_scan.h:
+
+d:/Code/CH592/EVT(演示)\ -\ 副本/EXAM/BLE/HID_Keyboard/APP/include/app_led.h:

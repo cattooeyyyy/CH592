@@ -1,6 +1,7 @@
 #include "CH59x_common.h"
 #include "key_scan.h"
 #include "hidkbd.h"       // 引入蓝牙发送功能
+#include "app_led.h"
 
 // --- 硬件引脚宏定义，方便后续修改布线 ---
 // 行线定义 (输出)
@@ -25,6 +26,7 @@
 
 // 定义消抖阈值，假设外部定时器每 10ms 调用一次该函数，2 次就是 20ms
 #define DEBOUNCE_TICKS  2 
+#define CTRL_KEY_LONG_PRESS_TICKS 125
 
 // 定义物理引脚结构体
 typedef struct {
@@ -77,7 +79,7 @@ Key_t my_keys[16] = {
     {0x2A, 0x00, 1, 0}, // Backspace
     {0x2C, 0x00, 1, 0}, // Space
     {0x28, 0x00, 1, 0}, // Enter
-    {0x29, 0x00, 1, 0}  // Esc
+    {0x00, 0x00, 1, 0}
 };
 
 /*IO口输入配置*/
@@ -126,23 +128,53 @@ static uint8_t Read_Col_Level(uint8_t col_index)
 // 定时扫描按键并消抖
 void Key_Scan_Task(void)
 {
-for (uint8_t row = 0; row < 4; row++) 
+// 专门用于控制键的长按状态计数器，定义为静态变量以在多次调用间保持数值
+    static uint16_t ctrl_hold_cnt = 0; 
+
+    for (uint8_t row = 0; row < 4; row++) 
     {
         // 1. 将当前扫描的行拉低
         Set_Row_Level(row, 0);
         
-        // 插入极短暂的延时，确保引脚电平状态稳定后再读取（CH592主频较高时建议添加）
+        // 插入极短暂的延时，确保引脚电平状态稳定后再读取
         __nop(); __nop(); __nop(); __nop();
 
         // 2. 依次读取 4 根列线的状态
         for (uint8_t col = 0; col < 4; col++) 
         {
             uint8_t current_raw_level = Read_Col_Level(col);
-            
-            // 计算当前按键在 my_keys 数组中的一维索引 (0 ~ 15)
             uint8_t idx = (row * 4) + col;
 
-            // 3. 执行与之前相同的消抖逻辑
+            // -----------------------------------------------------------
+            // 拦截特殊控制键 (假设是矩阵最后一个按键，即 idx == 15)
+            // -----------------------------------------------------------
+            if (idx == 15) 
+            {
+                if (current_raw_level == 0) // 检测到物理按下
+                {
+                    if (ctrl_hold_cnt < CTRL_KEY_LONG_PRESS_TICKS) 
+                    {
+                        ctrl_hold_cnt++;
+                        if (ctrl_hold_cnt == CTRL_KEY_LONG_PRESS_TICKS) 
+                        {
+                            // 计数器达到长按阈值，触发断开连接
+                            HidEmu_Disconnect();
+                        }
+                    }
+                    // 只要持续按下，计数器保持在阈值，不会溢出
+                } 
+                else // 物理松开或短按
+                {
+                    ctrl_hold_cnt = 0; // 松开即刻清零
+                }
+                
+                // 处理完控制键逻辑后，直接跳过当前循环，不将其视作常规键码发送
+                continue; 
+            }
+
+            // -----------------------------------------------------------
+            // 普通按键 (idx 0 ~ 14) 的常规消抖与键码发送逻辑
+            // -----------------------------------------------------------
             if (current_raw_level != my_keys[idx].confirmed_level) 
             {
                 my_keys[idx].debounce_cnt++;
@@ -151,12 +183,11 @@ for (uint8_t row = 0; row < 4; row++)
                     my_keys[idx].confirmed_level = current_raw_level;
                     my_keys[idx].debounce_cnt = 0; 
 
-                    // 按键动作确认，调用蓝牙发送逻辑
-                    if (my_keys[idx].confirmed_level == 0) // 被按下
+                    if (my_keys[idx].confirmed_level == 0) // 确认按下
                     {
                         hidEmuSendKbdReport(my_keys[idx].modifier, my_keys[idx].keycode);
                     } 
-                    else // 被松开
+                    else // 确认松开
                     {
                         hidEmuSendKbdReport(0x00, 0x00); 
                     }
@@ -164,11 +195,12 @@ for (uint8_t row = 0; row < 4; row++)
             } 
             else 
             {
-                // 如果电平未发生持续改变，清除消抖计数
+                // 若电平未发生变化，消抖计步器清零
                 my_keys[idx].debounce_cnt = 0;
             }
         }
         
-        // 4. 扫描完该行后，务必将其重新拉高，避免干扰下一行的扫描
+        // 3. 扫描完该行后重新拉高，避免干扰下一行扫描
         Set_Row_Level(row, 1);
-    }}
+    }
+    }

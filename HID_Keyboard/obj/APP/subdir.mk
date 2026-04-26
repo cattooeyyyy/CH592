@@ -5,16 +5,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../APP/app_led.c \
 ../APP/hidkbd.c \
 ../APP/hidkbd_main.c \
 ../APP/key_scan.c 
 
 C_DEPS += \
+./APP/app_led.d \
 ./APP/hidkbd.d \
 ./APP/hidkbd_main.d \
 ./APP/key_scan.d 
 
 OBJS += \
+./APP/app_led.o \
 ./APP/hidkbd.o \
 ./APP/hidkbd_main.o \
 ./APP/key_scan.o 
