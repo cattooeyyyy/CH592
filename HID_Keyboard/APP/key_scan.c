@@ -58,7 +58,7 @@ typedef struct {
     uint8_t  debounce_cnt;
 } Key_t;
 
-// 初始化 9 个按键数组 (初始状态假设引脚被上拉拉高，confirmed_level 填 1)
+// 初始化按键数组 (初始状态假设引脚被上拉拉高，confirmed_level 填 1)
 Key_t my_keys[16] = {
     /* 行0 */
     {0x1E, 0x00, 1, 0}, // 1
@@ -69,17 +69,17 @@ Key_t my_keys[16] = {
     {0x14, 0x00, 1, 0}, // Q
     {0x1A, 0x00, 1, 0}, // W
     {0x08, 0x00, 1, 0}, // E
-    {0x15, 0x00, 1, 0}, // R
+    {0x2c, 0x00, 1, 0}, // Space
     /* 行2 */
-    {0x04, 0x00, 1, 0}, // A
-    {0x16, 0x00, 1, 0}, // S
-    {0x07, 0x00, 1, 0}, // D
-    {0x09, 0x00, 1, 0}, // F
+    {0x50, 0x00, 1, 0}, // Left
+    {0x4B, 0x00, 1, 0}, // Page Up
+    {0x4E, 0x00, 1, 0}, // Page Down
+    {0x4F, 0x00, 1, 0}, // Right
     /* 行3 */
     {0x2A, 0x00, 1, 0}, // Backspace
-    {0x2C, 0x00, 1, 0}, // Space
-    {0x28, 0x00, 1, 0}, // Enter
-    {0x00, 0x00, 1, 0}
+    {0x2C, 0x04, 1, 0}, // Alt+Space (0x04代表 Left Alt, 0x2C代表 Space)
+    {0x1D, 0x01, 1, 0}, // Ctrl+Z (0x01代表 Left Ctrl, 0x1D代表 Z)
+    {0x00, 0x00, 1, 0}  // 保留，蓝牙配对控制
 };
 
 /*IO口输入配置*/

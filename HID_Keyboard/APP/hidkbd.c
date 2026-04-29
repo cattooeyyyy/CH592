@@ -563,6 +563,6 @@ void HidEmu_Disconnect(void)
         GAPRole_TerminateLink(hidEmuConnHandle);
         
         // 可选：如果要彻底重置历史配对记录，取消注释下一行
-        // GAPBondMgr_SetParameter(GAPBOND_ERASE_ALLBONDS, 0, NULL);
+        GAPBondMgr_SetParameter(GAPBOND_ERASE_ALLBONDS, 0, NULL);
     }
 }
